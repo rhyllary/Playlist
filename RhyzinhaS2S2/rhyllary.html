@@ -9,29 +9,18 @@
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
     <style>
-        body {
-            height: 100vh;
-            color: rgb(255, 255, 255);
-            font-family: sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0;
-            animation: gradientAnimation 5s ease infinite;
-            background: linear-gradient(180deg, rgba(2,0,36,1) 6%, rgb(4, 49, 70) 49%, rgb(0, 55, 73) 68%, rgb(7, 62, 75) 97%, rgb(6, 55, 68) 100%, rgb(1, 35, 43) 100%, rgb(2, 49, 58) 100%);
-            background-size: 400% 400%; /* Aumenta o tamanho do fundo para criar um efeito de movimento */
+        
+
+        button {
+            background-color: inherit;
+            color: inherit;
+            border: none;
         }
 
-        @keyframes gradientAnimation {
-            0% {
-                background-position: 0% 0%;
-            }
-            50% {
-                background-position: 100% 100%;
-            }
-            100% {
-                background-position: 0% 0%;
-            }
+        /* edita a capa */
+        #cover{
+            height: 300px;
+            width: 300px;
         }
 
         /*controle do butão*/
@@ -49,24 +38,84 @@
             align-items: center;
             margin-top: 1.5em;
         }
-        /* tirando o fundo dos butoes erdaqndo da classe "PAI" */
-        button {
-            background-color: inherit;
-            color: forestgreen;
-            border: none;
-        }
         
+       
+
         /*alteração de tamanho pelo tutrial, mas não esta funcionando*/
         .button{
             font-size: 1.5em;
         }
-        .button-biggest{
-            font-size: 4em;
-        }
+
         .button-navigate {
             font-size: 3em; 
         }
-        /*alteração de tamanho corrigido*/
+
+        .button-biggest{
+            font-size: 4em;
+        }
+        /*edita o titulo*/
+        #playlist-title {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            margin: 1em 0 4em 0;
+        }
+
+        .button-active {
+            color: rgb(0, 128, 62)
+        }
+
+        #time-box {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            font-size: smaller;
+            margin-top: 0.5em;
+        }
+        #bellow-cover {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            margin: 3em 0 1em 0;
+        }
+        
+        /* trocar a cor do nome da banda */
+        #song-name {
+            font-size: 1.5em;
+            font-weight: bolder;
+        }
+
+        
+        .light-color {
+            color: rgb(255, 255, 255);
+        }
+
+         /* a barra de carregamento */
+         #progress-bar {
+            background-color:rgb(255, 255, 255);
+            height: 3px; /*Corresponde a uma altura fixa */
+            width: 100%;
+            border-radius: 15px; /*Este é para arredondar as bordas, nossa barra de progresso não é reta nas bordas na imagem original, por este motivo arredondados as bordas */
+            margin-bottom: 1em;
+        }
+
+        #current-progress {
+            background-color: white;
+            height: inherit;
+            width: 50%;
+            border-radius: inherit;
+        }
+        
+        #progress-container {
+            padding-bottom: 1em;
+            cursor: pointer;
+        }
+
+        .button-active {
+            color: rgb(0, 128, 62)
+        }
+
         #play {
             font-size: 3em;
         }
@@ -78,55 +127,7 @@
         #next {
             font-size: 2em;
         }
-
-        /* edita a capa */
-        #cover{
-            height: 300px;
-            width: 300px;
-        }
-        img {
-            height: 300px;
-            width: 300px;
-        }
-
-        /*edita o titulo*/
-        #playlist-title {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            margin: 1em 0 4em 0;
-        }
         
-        #bellow-cover {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-            margin: 3em 0 1em 0;
-        }
-        /* trocar a cor do nome da banda */
-        #song-name {
-            font-size: 1.5em;
-            font-weight: bolder;
-        }
-        .light-color {
-            color: rgb(255, 255, 255);
-        }
-
-        /* a barra de carregamento */
-        #progress-bar {
-            background-color:rgb(255, 255, 255);
-            height: 3px; /*Corresponde a uma altura fixa */
-            width: 100%;
-            border-radius: 15px; /*Este é para arredondar as bordas, nossa barra de progresso não é reta nas bordas na imagem original, por este motivo arredondados as bordas */
-            margin-bottom: 1em;
-        }
-        #current-progress {
-            background-color: white;
-            height: inherit;
-            width: 50%;
-            border-radius: inherit;
-        }
     </style>
 </head>
 
@@ -155,15 +156,27 @@
         <button id="repeat" class="button"><i class="bi bi-repeat"></i></button>
     </div>
     
-    <script>
-        songName = document.getElementById('song-name');
-        songName.innerText = 'winderfwlor';
-        const song = document.getElementById("audio");
-        songName.innerText = 'As You Were';
-song.play();
-song.pause();
-
-    </script>
+    
 </body>
+<script>
+    // Elementos DOM
+const songName = document.getElementById('song-name'); //nome da musica
+const bandName = document.getElementById('band-name'); //nome da banda
+const song = document.getElementById('audio'); // audio que vai trazer
+const cover = document.getElementById('cover'); // imagem da musica
+const play = document.getElementById('play'); // quando click no play, ele começa a tocar a musica
+const next = document.getElementById('next'); // voltar uma musica
+const previous = document.getElementById('previous'); // avançar uma musica
+const likeButton = document.getElementById('like'); // coraçao 
+const currentProgress = document.getElementById('current-progress'); // tempo da musica
+const progressContainer = document.getElementById('progress-container');  //tempo da musica
+const shuffleButton = document.getElementById('shuffle');
+const repeatButton = document.getElementById('repeat'); // repete a musica
+const songTime = document.getElementById('song-time'); // quantidade de tempo
+const totalTime = document.getElementById('total-time');   // tempo maximo da musica
+
+/
+
+ </script>
 
 </html>
