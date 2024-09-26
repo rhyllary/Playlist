@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rhyllary</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+    <style>
+        
+
+        button {
+            background-color: inherit;
+            color: inherit;
+            border: none;
+        }
+
+        /* edita a capa */
+        #cover{
+            height: 300px;
+            width: 300px;
+        }
+
+        /*controle do butão*/
+        #below-cover {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #button-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+            margin-top: 1.5em;
+        }
+        
+       
+
+        /*alteração de tamanho pelo tutrial, mas não esta funcionando*/
+        .button{
+            font-size: 1.5em;
+        }
+
+        .button-navigate {
+            font-size: 3em; 
+        }
+
+        .button-biggest{
+            font-size: 4em;
+        }
+        /*edita o titulo*/
+        #playlist-title {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            margin: 1em 0 4em 0;
+        }
+
+        .button-active {
+            color: rgb(0, 128, 62)
+        }
+
+        #time-box {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            font-size: smaller;
+            margin-top: 0.5em;
+        }
+        #bellow-cover {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            margin: 3em 0 1em 0;
+        }
+        
+        /* trocar a cor do nome da banda */
+        #song-name {
+            font-size: 1.5em;
+            font-weight: bolder;
+        }
+
+        
+        .light-color {
+            color: rgb(255, 255, 255);
+        }
+
+         /* a barra de carregamento */
+         #progress-bar {
+            background-color:rgb(255, 255, 255);
+            height: 3px; /*Corresponde a uma altura fixa */
+            width: 100%;
+            border-radius: 15px; /*Este é para arredondar as bordas, nossa barra de progresso não é reta nas bordas na imagem original, por este motivo arredondados as bordas */
+            margin-bottom: 1em;
+        }
+
+        #current-progress {
+            background-color: white;
+            height: inherit;
+            width: 50%;
+            border-radius: inherit;
+        }
+        
+        #progress-container {
+            padding-bottom: 1em;
+            cursor: pointer;
+        }
+
+        .button-active {
+            color: rgb(0, 128, 62)
+        }
+
+        #play {
+            font-size: 3em;
+        }
+
+        #previous {
+            font-size: 2em;
+        }
+
+        #next {
+            font-size: 2em;
+        }
+        
+    </style>
+</head>
+
+<body>
+    <div class = "music-container">
+    <h4 id="playlist-title">Playlist Hashtag</h4>
+    <img id='cover' src="img/billieelish.jpg" alt="Cover">
+    <audio src="audio"  src="music/- BillieEilishWILDFLOWE.mp3"></audio>
+
+    <div id="below-cover">
+        <div id="song-info">
+            <div id="song-name">winderfwlor</div>
+            <div id="band-name" class ="button light-color">billy elish</div>
+        </div>
+        <button id="like" class ="button light-color"><i class="bi bi-heart"></i></button>
+
+    </div>
+    
+    <div id="progress-bar"></div>
+
+    <div id = "button-container">
+        <button id="shuffle" class="button"><i class="bi bi-shuffle"></i></button>
+        <button id="previous" class="button button-navigate"><i class="bi bi-skip-start-fill"></i></button>
+        <button id="play" class="button button-biggest"><i class="bi bi-play-circle-fill"></i></button>
+        <button id="next" class="button button-navigate"><i class="bi bi-skip-end-fill"></i></button>
+        <button id="repeat" class="button"><i class="bi bi-repeat"></i></button>
+    </div>
+    
+    
+</body>
+<script>
+    // Elementos DOM
+const songName = document.getElementById('song-name'); //nome da musica
+const bandName = document.getElementById('band-name'); //nome da banda
+const song = document.getElementById('audio'); // audio que vai trazer
+const cover = document.getElementById('cover'); // imagem da musica
+const play = document.getElementById('play'); // quando click no play, ele começa a tocar a musica
+const next = document.getElementById('next'); // voltar uma musica
+const previous = document.getElementById('previous'); // avançar uma musica
+const likeButton = document.getElementById('like'); // coraçao 
+const currentProgress = document.getElementById('current-progress'); // tempo da musica
+const progressContainer = document.getElementById('progress-container');  //tempo da musica
+const shuffleButton = document.getElementById('shuffle');
+const repeatButton = document.getElementById('repeat'); // repete a musica
+const songTime = document.getElementById('song-time'); // quantidade de tempo
+const totalTime = document.getElementById('total-time');   // tempo maximo da musica
+
+
+ </script>
+
+</html>

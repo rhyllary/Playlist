@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+    <style>
+        body {
+            height: 98.3vh;
+            color: #fff;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            animation: gradientAnimation s ease infinite;
+            background: linear-gradient(180deg, rgba(2,0,36,1) 6%, rgb(4, 49, 70) 49%, rgb(0, 55, 73) 68%, rgb(7, 62, 75) 97%);
+            background-size: 400% 400%;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+
+        button {
+            background: inherit;
+            color: inherit;
+            border: none;
+        }
+
+        #cover {
+            height: 200px;
+            width: 200px;
+        }
+
+        #below-cover {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 3em 0 1em 0;
+        }
+
+        #button-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .button {
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+
+        .button-navigate { font-size: 3em; }
+        .button-biggest { font-size: 4em; }
+
+        #playlist-title {
+            margin: 1em 0 4em 0;
+        }
+
+        .button-active { color: #00ff00; }
+        #time-box { display: flex; justify-content: space-between; font-size: smaller; margin-top: 0.5em; }
+        #song-name { font-size: 1.5em; font-weight: bold; }
+        .light-color { color: #789; }
+        #progress-bar { background-color: #789; height: 3px; width: 100%; border-radius: 15px; }
+        #current-progress { background-color: white; height: inherit; width: var(--progress); border-radius: inherit; }
+        #progress-container { padding-bottom: 1em; cursor: pointer; }
+    </style>
+</head>
+
+<body>
+
+    <main class="music-container">
+        <h4 id="playlist-title">Playlist</h4>
+        <img id="cover" alt="Capa do álbum">
+        <audio id='audio'></audio>
+
+        <div id="below-cover">
+            <div id="song-info">
+                <div id="song-name"></div>
+                <div id="band-name"></div>
+            </div>
+            <button id="like" class="button light-color"><i class="bi bi-heart"></i></button>
+        </div>
+
+        <div id="progress-container">
+            <div id="progress-bar">
+                <div id="current-progress"></div>
+            </div>
+            <div id="time-box">
+                <div id="song-time">00:00:00</div>
+                <div id="total-time">00:00:00</div>
+            </div>
+        </div>
+
+        <div id="button-container">
+            <button id="shuffle" class="button"><i class="bi bi-shuffle"></i></button>
+            <button id="previous" class="button button-navigate"><i class="bi bi-skip-start-fill"></i></button>
+            <button id="play" class="button button-biggest"><i class="bi bi-play-circle-fill"></i></button>
+            <button id="next" class="button button-navigate"><i class="bi bi-skip-end-fill"></i></button>
+            <button id="repeat" class="button"><i class="bi bi-repeat"></i></button>
+        </div>
+    </main>
+
+    <script>
+        //esse bloco vai estar pegadndo e armazenando os elementos do dom
+        const songName = document.getElementById('song-name');
+        const bandName = document.getElementById('band-name');
+        const song = document.getElementById('audio');
+        const cover = document.getElementById('cover');
+        const play = document.getElementById('play');
+        const next = document.getElementById('next');
+        const previous = document.getElementById('previous');
+        const likeButton = document.getElementById('like');
+        const currentProgress = document.getElementById('current-progress');
+        const progressContainer = document.getElementById('progress-container');
+        const shuffleButton = document.getElementById('shuffle');
+        const repeatButton = document.getElementById('repeat');
+        const songTime = document.getElementById('song-time');
+        const totalTime = document.getElementById('total-time');
+
+        // Músicas
+        const wildflower = {
+            songName: 'Wild Flower',
+            artist: 'Billie Eilish',
+            file: 'wild_flowe',
+            liked: false,
+        };
+
+        const korn = {
+            songName: 'korn',
+            artist: 'Korn',
+            file: 'korn',
+            liked: false,
+        };
+        const DuHast = {
+            songName: 'DuHast',
+            artist: 'Rammstein',
+            file: 'DuHast',
+            liked: false,
+        };
+
+        const Reminder = {
+            songName: 'Reminder',
+            artist: 'the weeknd',
+            file: 'Reminder',
+            liked: false,
+        };
+        const Glider= {
+            songName: 'Glider',
+            artist: 'Japanese Breakfast',
+            file: 'glider',
+            liked: false,
+        };
+        const ComoEuQuero = {
+            songName: 'COMO EU QUERO',
+            artist: 'Kida Abelha',
+            file: 'ComoEuQuero',
+            liked: false,
+        };
+        
+
+
+        let isPlaying = false;  
+        let isShuffled = false;
+        let repeatOn = false;
+        let currentSongIndex = 0;
+        const originalPlaylist = [wildflower, korn, DuHast, Reminder, Glider, ComoEuQuero];
+        let playlist = [...originalPlaylist];
+
+        function likeButtonRender() {
+            if (playlist[currentSongIndex].liked) {
+                likeButton.querySelector('.bi').classList.replace('bi-heart', 'bi-heart-fill');
+                likeButton.classList.add('button-active');
+            } else {
+                likeButton.querySelector('.bi').classList.replace('bi-heart-fill', 'bi-heart');
+                likeButton.classList.remove('button-active');
+            }
+        }
+
+        function likeButtonClicked() {
+            playlist[currentSongIndex].liked = !playlist[currentSongIndex].liked;
+            likeButtonRender();
+        }
+
+        function initializeSong() {
+            const currentSong = playlist[currentSongIndex];
+            cover.src = `img/${currentSong.file}.jpg`;
+            songName.innerText = currentSong.songName;
+            bandName.innerText = currentSong.artist;
+            song.src = `music/${currentSong.file}.mp3`;
+            likeButtonRender();
+        }
+
+        function playSong() {
+            play.querySelector(".bi").classList.replace("bi-play-circle-fill", "bi-pause-circle-fill");
+            song.play();
+            isPlaying = true;
+        }
+
+        function pauseSong() {
+            play.querySelector(".bi").classList.replace("bi-pause-circle-fill", "bi-play-circle-fill");
+            song.pause();
+            isPlaying = false;
+        }
+
+        function playPauseDecider() {
+            isPlaying ? pauseSong() : playSong();
+        }
+
+        function previousSong() {
+            currentSongIndex = (currentSongIndex === 0) ? playlist.length - 1 : currentSongIndex - 1;
+            initializeSong();
+        }
+
+        function nextSong() {
+            currentSongIndex = (currentSongIndex === playlist.length - 1) ? 0 : currentSongIndex + 1;
+            initializeSong();
+        }
+
+        function updateProgress() {
+            const barWidth = (song.currentTime / song.duration) * 100;
+            currentProgress.style.setProperty('--progress', `${barWidth}%`);
+            songTime.innerText = toHHMMSS(song.currentTime);
+        }
+
+        function jumpTo(event) {
+            const width = progressContainer.clientWidth;
+            const clickPosition = event.offsetX;
+            const jumpToTime = (clickPosition / width) * song.duration;
+            song.currentTime = jumpToTime;
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function shuffleButtonClicked() {
+            isShuffled = !isShuffled;
+            if (isShuffled) {
+                shuffleArray(playlist);
+            } else {
+                playlist = [...originalPlaylist];
+            }
+            shuffleButton.classList.toggle('button-active');
+        }
+
+        function repeatButtonClicked() {
+            repeatOn = !repeatOn;
+            repeatButton.classList.toggle('button-active');
+        }
+
+        function toHHMMSS(seconds) {
+            const hour = Math.floor(seconds / 3600);
+            const min = Math.floor((seconds % 3600) / 60);
+            const sec = Math.floor(seconds % 60);
+            return `${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+        }
+
+        function updateTotalTime() {
+            totalTime.innerText = toHHMMSS(song.duration);
+        }
+
+        song.addEventListener('ended', () => {
+            repeatOn ? playSong() : nextSong();
+        });
+        song.addEventListener('timeupdate', updateProgress);
+        song.addEventListener('loadedmetadata', updateTotalTime);
+        progressContainer.addEventListener('click', jumpTo);
+        play.addEventListener('click', playPauseDecider);
+        next.addEventListener('click', nextSong);
+        previous.addEventListener('click', previousSong);
+        shuffleButton.addEventListener('click', shuffleButtonClicked);
+        repeatButton.addEventListener('click', repeatButtonClicked);
+        likeButton.addEventListener('click', likeButtonClicked);
+
+        initializeSong();
+    </script>
+</body>
+
+</html>
